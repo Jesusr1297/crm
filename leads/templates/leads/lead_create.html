@@ -1,13 +1,8 @@
-<html>
-
-<a href="/leads">go back</a>
-<hr>
-<h1>create a new lead</h1>
-<hr>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit">
-</form>
-
-</html>
+{% extends 'base.html' %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit">
+    </form>
+{% endblock %}

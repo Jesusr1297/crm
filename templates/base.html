@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>djcrm</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css">
+</head>
+<body>
+<div class="max-w-7xl mx-auto">
+    {% include 'navbar.html' %}
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+{% include 'scripts.html' %}
+</html>
