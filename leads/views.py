@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 from django.views import generic
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
+from agents.mixins import OrganizerAndLoginRequiredMixin
 from . import models, forms
 
 
@@ -52,7 +53,7 @@ def lead_detail(request, pk):
     return render(request, 'leads/lead_detail.html', context=context)
 
 
-class LeadCreateView(LoginRequiredMixin, generic.CreateView):
+class LeadCreateView(OrganizerAndLoginRequiredMixin, generic.CreateView):
     template_name = 'leads/lead_create.html'
     form_class = forms.LeadModelForm
 
@@ -82,7 +83,7 @@ def lead_create(request):
     return render(request, 'leads/lead_create.html', context=context)
 
 
-class LeadUpdateView(LoginRequiredMixin, generic.UpdateView):
+class LeadUpdateView(OrganizerAndLoginRequiredMixin, generic.UpdateView):
     model = models.Lead
     fields = '__all__'
     template_name = 'leads/lead_update.html'
@@ -106,7 +107,7 @@ def lead_update(request, pk):
     return render(request, 'leads/lead_update.html', context=context)
 
 
-class LeadDeleteView(LoginRequiredMixin, generic.DeleteView):
+class LeadDeleteView(OrganizerAndLoginRequiredMixin, generic.DeleteView):
     model = models.Lead
     template_name = 'leads/lead_delete.html'
 
