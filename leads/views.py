@@ -25,8 +25,20 @@ def landing_page(request):
 
 class LeadListView(LoginRequiredMixin, generic.ListView):
     template_name = 'leads/lead_list.html'
-    queryset = models.Lead.objects.all()
     context_object_name = 'leads'
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # initial queryset of leads for the entire organization
+        if user.is_organizer:
+            queryset = models.Lead.objects.filter(organization=user.userprofile)
+        else:
+            # user is agent
+            queryset = models.Lead.objects.filter(organization=user.agent.organization)
+            # filter for the agent that is logged in
+            queryset = queryset.filter(agent__user=user)
+        return queryset
 
 
 def lead_list(request):
@@ -41,8 +53,20 @@ def lead_list(request):
 
 class LeadDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'leads/lead_detail.html'
-    model = models.Lead
     context_object_name = 'lead'
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # initial queryset of leads for the entire organization
+        if user.is_organizer:
+            queryset = models.Lead.objects.filter(organization=user.userprofile)
+        else:
+            # user is agent
+            queryset = models.Lead.objects.filter(organization=user.agent.organization)
+            # filter for the agent that is logged in
+            queryset = queryset.filter(agent__user=user)
+        return queryset
 
 
 def lead_detail(request, pk):
@@ -84,9 +108,12 @@ def lead_create(request):
 
 
 class LeadUpdateView(OrganizerAndLoginRequiredMixin, generic.UpdateView):
-    model = models.Lead
-    fields = '__all__'
     template_name = 'leads/lead_update.html'
+    form_class = forms.LeadModelForm
+
+    def get_queryset(self):
+        user = self.request.user
+        return models.Lead.objects.filter(organization=user.userprofile)
 
     def get_success_url(self):
         return reverse('leads:lead-list')
@@ -108,11 +135,14 @@ def lead_update(request, pk):
 
 
 class LeadDeleteView(OrganizerAndLoginRequiredMixin, generic.DeleteView):
-    model = models.Lead
     template_name = 'leads/lead_delete.html'
 
     def get_success_url(self):
         return reverse('leads:lead-list')
+
+    def get_queryset(self):
+        user = self.request.user
+        return models.Lead.objects.filter(organization=user.userprofile)
 
 
 def lead_delete(request, pk):
