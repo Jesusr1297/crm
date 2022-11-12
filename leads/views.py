@@ -32,13 +32,23 @@ class LeadListView(LoginRequiredMixin, generic.ListView):
 
         # initial queryset of leads for the entire organization
         if user.is_organizer:
-            queryset = models.Lead.objects.filter(organization=user.userprofile)
+            queryset = models.Lead.objects.filter(organization=user.userprofile, agent__isnull=False)
         else:
             # user is agent
-            queryset = models.Lead.objects.filter(organization=user.agent.organization)
+            queryset = models.Lead.objects.filter(organization=user.agent.organization, agent__isnull=False)
             # filter for the agent that is logged in
             queryset = queryset.filter(agent__user=user)
         return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        user = self.request.user
+        context = super(LeadListView, self).get_context_data(**kwargs)
+        if user.is_organizer:
+            queryset = models.Lead.objects.filter(organization=user.userprofile, agent__isnull=True)
+            context.update({
+                'unassigned_leads': queryset
+            })
+        return context
 
 
 def lead_list(request):
@@ -85,6 +95,9 @@ class LeadCreateView(OrganizerAndLoginRequiredMixin, generic.CreateView):
         return reverse('leads:lead-list')
 
     def form_valid(self, form):
+        lead = form.save(commit=False)
+        lead.organization = self.request.user.userprofile
+        lead.save()
         send_mail(
             subject='A lead has been created',
             message='go to see the site of the new lead',
