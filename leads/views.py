@@ -132,6 +132,11 @@ class LeadUpdateView(OrganizerAndLoginRequiredMixin, generic.UpdateView):
         return reverse('leads:lead-list')
 
 
+class AssignAgentView(OrganizerAndLoginRequiredMixin, generic.FormView):
+    template_name = 'leads/assign_agent.html'
+    form_class = None
+
+
 def lead_update(request, pk):
     lead = models.Lead.objects.get(id=pk)
     form = forms.LeadModelForm(instance=lead)
