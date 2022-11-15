@@ -11,5 +11,6 @@ urlpatterns = [
     path('<int:pk>/assign-agent/', views.AssignAgentView.as_view(), name='lead-assign-agent'),
     path('create/', views.LeadCreateView.as_view(), name='lead-create'),
 
-    path('category/', views.CategoryListView.as_view(), name='lead-category')
+    path('category/', views.CategoryListView.as_view(), name='lead-category-list'),
+    path('category/<int:pk>/', views.CategoryDetailView.as_view(), name='lead-category-detail')
 ]

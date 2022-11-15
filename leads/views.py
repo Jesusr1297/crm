@@ -210,8 +210,14 @@ class CategoryListView(LoginRequiredMixin, generic.ListView):
 
 
 class CategoryDetailView(LoginRequiredMixin, generic.DetailView):
-    template_name = None
+    template_name = 'leads/category_detail.html'
     context_object_name = 'category'
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryDetailView, self).get_context_data(**kwargs)
+        leads = self.get_object().leads.all()  # models.Lead.objects.filter(category=self.get_object())
+        context.update({'leads': leads})
+        return context
 
     def get_queryset(self):
         user = self.request.user
