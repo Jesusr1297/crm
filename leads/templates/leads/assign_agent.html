@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
+{% load tailwind_filters %}
 {% block content %}
     <h1>Assign an agent to this lead</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form|crispy }}
         <input type="submit">
     </form>
 {% endblock %}

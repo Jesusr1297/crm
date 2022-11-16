@@ -11,18 +11,21 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+READ_DOT_ENV_FILE = env.bool('READ_DOT_ENV_FILE', default=False)
+
+if READ_DOT_ENV_FILE:
+    environ.Env.read_env()
+
+DEBUG = env('DEBUG')
+SECRET_KEY = env('SECRET_KEY')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)pspz8b01a#wftteot1rrf!b)#x0ajzc*exhg2_k368&m6w)%r'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -36,7 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # local apps
     'leads', 'agents',
+
+    # Third party apps
+    'crispy_forms', 'crispy_tailwind'
 ]
 
 MIDDLEWARE = [
@@ -130,3 +137,5 @@ LOGIN_REDIRECT_URL = 'leads:lead-list'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'landing-page'
 
+CRISPY_TEMPLATE_PACK = 'tailwind'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"

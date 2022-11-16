@@ -226,6 +226,24 @@ class CategoryDetailView(LoginRequiredMixin, generic.DetailView):
         else:
             queryset = models.Category.objects.filter(organization=user.agent.organization)
         return queryset
+
+
+class LeadCategoryUpdateView(LoginRequiredMixin, generic.UpdateView):
+    template_name = 'leads/category_update.html'
+    form_class = forms.LeadCategoryUpdateForm
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_organizer:
+            qs = models.Lead.objects.filter(organization=user.userprofile)
+        else:
+            qs = models.Lead.objects.filter(organization=user.agent.organization)
+            qs = qs.filter(agent__user=user)
+        return qs
+
+    def get_success_url(self):
+        return reverse('leads:lead-detail', kwargs={'pk':self.get_object().id})
+
 # def lead_create(request):
 #     """
 #     this is only for reference

@@ -31,10 +31,14 @@ class Lead(models.Model):
     agent = models.ForeignKey('Agent', null=True, blank=True, on_delete=models.SET_NULL)
 
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='leads')
+    description = models.TextField()
+    date_added = models.DateField(auto_now=True)
+    phone_number = models.CharField(max_length=20)
+    email = models.EmailField()
 
     # phoned = models.BooleanField(default=False)
     # source = models.CharField(choices=SOURCE_CHOICES, max_length=100)
-    #
+
     # profile_picture = models.ImageField(null=True, blank=True)
     # special_files = models.FileField(blank=True, null=True)
 
